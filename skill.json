@@ -1,0 +1,17 @@
+{
+  "name": "genpark-two-phase-commit-coordinator-skill",
+  "version": "1.0.0",
+  "description": "Two-Phase Commit (2PC) distributed atomic transaction coordinator executing prepare voting, commit distribution, and write-ahead log recovery.",
+  "main": "client.py",
+  "mcp_server": "mcp_server.py",
+  "topics": [
+    "genpark-skill",
+    "agentic-ai",
+    "two-phase-commit",
+    "2pc",
+    "distributed-transactions",
+    "atomic-commit",
+    "acid"
+  ],
+  "dependencies": []
+}
