@@ -1,28 +1,55 @@
+"""Two-Phase Commit (2PC) Transaction Coordinator.
+100% Python Standard Library.
+"""
+
+from typing import Dict, List, Any, Optional
+
 class TwoPhaseCommitCoordinator:
-    """
-    Two-Phase Commit (2PC) Coordinator.
-    Orchestrates distributed atomic transactions across participant nodes.
-    """
-    def __init__(self, participants):
-        self.participants = participants
-        self.log = []
+    """Atomic multi-agent distributed transaction coordinator enforcing 2PC protocol."""
 
-    def execute_transaction(self, tx_id, tx_data):
-        self.log.append(("START", tx_id))
-        votes = {}
-        for name, p in self.participants.items():
-            vote = p.prepare(tx_id, tx_data)
-            votes[name] = vote
-            if not vote:
-                break
+    def __init__(self):
+        self.transactions: Dict[str, Dict[str, Any]] = {}
+        self.participants: set = set()
 
-        if all(votes.values()) and len(votes) == len(self.participants):
-            self.log.append(("COMMIT", tx_id))
-            for p in self.participants.values():
-                p.commit(tx_id)
-            return True, "COMMITTED"
+    def register_participant(self, participant_id: str):
+        self.participants.add(participant_id)
+
+    def begin_transaction(self, tx_id: str, payload: Any) -> Dict[str, Any]:
+        self.transactions[tx_id] = {
+            "tx_id": tx_id,
+            "payload": payload,
+            "state": "PREPARING",
+            "votes": {},
+            "participants": list(self.participants)
+        }
+        return self.transactions[tx_id]
+
+    def vote(self, tx_id: str, participant_id: str, vote_yes: bool, reason: str = "") -> Dict[str, Any]:
+        tx = self.transactions.get(tx_id)
+        if not tx:
+            raise ValueError(f"Unknown transaction {tx_id}")
+        if tx["state"] != "PREPARING":
+            raise RuntimeError(f"Cannot vote in state {tx['state']}")
+        tx["votes"][participant_id] = {"vote": vote_yes, "reason": reason}
+        return tx
+
+    def decide(self, tx_id: str) -> Dict[str, Any]:
+        tx = self.transactions.get(tx_id)
+        if not tx:
+            raise ValueError(f"Unknown transaction {tx_id}")
+        all_participants = tx["participants"]
+        votes = tx["votes"]
+
+        if len(votes) < len(all_participants):
+            tx["state"] = "ABORTED"
+            tx["decision_reason"] = "Missing votes from one or more participants"
         else:
-            self.log.append(("ABORT", tx_id))
-            for p in self.participants.values():
-                p.abort(tx_id)
-            return False, "ABORTED"
+            all_yes = all(v["vote"] is True for v in votes.values())
+            if all_yes:
+                tx["state"] = "COMMITTED"
+                tx["decision_reason"] = "Consensus achieved: all participants voted YES"
+            else:
+                tx["state"] = "ABORTED"
+                rejected_by = [p for p, v in votes.items() if not v["vote"]]
+                tx["decision_reason"] = f"Aborted: rejected by {rejected_by}"
+        return tx
