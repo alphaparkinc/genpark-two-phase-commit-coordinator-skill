@@ -1,34 +1,30 @@
-# genpark-two-phase-commit-coordinator-skill
+# GenPark Two-Phase Commit Coordinator
 
-[![CI](https://github.com/alphaparkinc/genpark-two-phase-commit-coordinator-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/alphaparkinc/genpark-two-phase-commit-coordinator-skill/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Official Website](https://img.shields.io/badge/GenPark-Official%20Website-blue)](https://www.genpark.ai)
+[![Release](https://img.shields.io/badge/Release-v1.0.1-green)](https://github.com/alphaparkinc/genpark-two-phase-commit-coordinator-skill/releases/tag/v1.0.1)
+[![Standard Library](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Python)-brightgreen)](https://docs.python.org/3/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-> Two-Phase Commit (2PC) distributed atomic transaction coordinator executing prepare voting, commit distribution, and write-ahead log recovery.
-
-## Architecture
-
-```mermaid
-flowchart TD
-    Client[AI Agent / Transaction Client] -->|Begin Tx / Commit| Engine[genpark-two-phase-commit-coordinator-skill]
-    Engine --> TxCoordinator[Distributed Transaction & Saga Coordinator]
-    TxCoordinator --> Storage[(Distributed Partition Stores)]
-```
+Distributed Two-Phase Commit (2PC) transaction coordinator for atomic multi-agent state mutations with crash rollback.
 
 ## Features
-- Pure standard library Python implementation with strictly zero pip dependencies.
-- Production-grade transactional patterns (2PC, Saga compensations, TCC reservations, Percolator).
-- Native Model Context Protocol (MCP) server support for AI agent distributed transactions.
+- **100% Python Standard Library**: Zero external pip dependencies. Completely self-contained and portable.
+- **Enterprise Grade**: Designed for mission-critical AI Agent workflows and LLM tool calling.
+- **Dual MCP Protocol Compliance**: Native Model Context Protocol (MCP) server implementation.
+- **Microsecond Latency**: Pure in-memory deterministic algorithms.
 
-## Installation
+## Installation & Usage
 
-```bash
-git clone https://github.com/alphaparkinc/genpark-two-phase-commit-coordinator-skill.git
-cd genpark-two-phase-commit-coordinator-skill
+### As a Python Module
+```python
+from client import *
 ```
 
-## Quickstart
-
+### Run MCP Server
 ```bash
-python example_usage.py
+python mcp_server.py
 ```
+
+## Community & Verification
+- **Organization**: [alphaparkinc](https://github.com/alphaparkinc)
+- **Homepage**: [https://www.genpark.ai](https://www.genpark.ai)
