@@ -1,0 +1,10 @@
+startCommand:
+  type: stdio
+  config:
+    command: python
+    args:
+      - mcp_server.py
+name: genpark-two-phase-commit-coordinator-skill
+description: Distributed Two-Phase Commit (2PC) transaction coordinator for atomic multi-agent state mutations with crash rollback
+version: 1.0.1
+homepage: https://www.genpark.ai
